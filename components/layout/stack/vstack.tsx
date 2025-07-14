@@ -1,13 +1,13 @@
 import { SpacingMap, SpacingType } from "../../const/spacing";
 
-type HStackProps = {
+type VStackProps = {
   children: React.ReactNode;
   space?: SpacingType;
 };
 
-export default function HStack({
+export default function VStack({
   children,
   space = SpacingMap.None,
-}: HStackProps) {
-  return <div className={`flex flex-row gap-${space}`}>{children}</div>;
+}: VStackProps) {
+  return <div className={`flex flex-col gap-${space}`}>{children}</div>;
 }
