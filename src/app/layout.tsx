@@ -27,8 +27,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
-      <body className={`${notoSansJP.variable} ${roboto.variable}`}>
+    <html lang="ja" className="h-full">
+      <body
+        className={`${notoSansJP.variable} ${roboto.variable} h-full bg-gray-100`}
+      >
         {children}
       </body>
     </html>
