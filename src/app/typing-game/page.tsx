@@ -18,7 +18,7 @@ export default function TypingGame() {
     }
     problemTimerRef.current = setInterval(() => {
       setProblemTimer((prev) => prev - 1);
-    }, timeoutForProblem * 1000);
+    }, timeoutForProblem);
   }, []);
 
   const handleOnChange = useCallback(
@@ -35,7 +35,9 @@ export default function TypingGame() {
   );
 
   useEffect(() => {
-    startProblem();
+    if (problemTimer <= 0 || problem === "") {
+      startProblem();
+    }
     inputRef.current?.focus();
 
     return () => {
@@ -43,7 +45,7 @@ export default function TypingGame() {
         clearInterval(problemTimerRef.current);
       }
     };
-  }, [startProblem]);
+  }, [startProblem, problemTimer, problem]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24">
