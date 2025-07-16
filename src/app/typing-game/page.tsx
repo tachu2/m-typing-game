@@ -1,25 +1,35 @@
 "use client";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
+import { problemList } from "./const";
 
 export default function TypingGame() {
   const [input, setInput] = useState("");
-
+  const [problem, setProblem] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
-  const problem = "test";
 
-  const handleOnChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value);
-    if (e.target.value === problem) {
-      console.log("Correct!");
-      if (inputRef.current) {
-        setInput("");
-      }
-    }
+  const pickProblem = useCallback(() => {
+    const randomIndex = Math.floor(Math.random() * problemList.length);
+    return problemList[randomIndex];
   }, []);
+
+  const handleOnChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setInput(e.target.value);
+      if (e.target.value === problem) {
+        console.log("Correct!");
+        if (inputRef.current) {
+          setProblem(pickProblem());
+          setInput("");
+        }
+      }
+    },
+    [problem, pickProblem],
+  );
 
   useEffect(() => {
+    setProblem(pickProblem());
     inputRef.current?.focus();
-  }, []);
+  }, [pickProblem]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24">
