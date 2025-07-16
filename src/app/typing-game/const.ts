@@ -100,3 +100,5 @@ export const problemList = [
   "wary",
   "yield",
 ];
+
+export const timeoutForProblem = 5;

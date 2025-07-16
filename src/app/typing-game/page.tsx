@@ -1,15 +1,24 @@
 "use client";
 import { ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
-import { problemList } from "./const";
+import { problemList, timeoutForProblem } from "./const";
 
 export default function TypingGame() {
   const [input, setInput] = useState("");
   const [problem, setProblem] = useState("");
+  const [problemTimer, setProblemTimer] = useState(timeoutForProblem);
+  const problemTimerRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const pickProblem = useCallback(() => {
+  const startProblem = useCallback(() => {
+    setInput("");
     const randomIndex = Math.floor(Math.random() * problemList.length);
-    return problemList[randomIndex];
+    setProblem(problemList[randomIndex]);
+    if (problemTimerRef.current) {
+      clearInterval(problemTimerRef.current);
+    }
+    problemTimerRef.current = setInterval(() => {
+      setProblemTimer((prev) => prev - 1);
+    }, timeoutForProblem * 1000);
   }, []);
 
   const handleOnChange = useCallback(
@@ -18,18 +27,23 @@ export default function TypingGame() {
       if (e.target.value === problem) {
         console.log("Correct!");
         if (inputRef.current) {
-          setProblem(pickProblem());
-          setInput("");
+          startProblem();
         }
       }
     },
-    [problem, pickProblem],
+    [problem, startProblem],
   );
 
   useEffect(() => {
-    setProblem(pickProblem());
+    startProblem();
     inputRef.current?.focus();
-  }, [pickProblem]);
+
+    return () => {
+      if (problemTimerRef.current) {
+        clearInterval(problemTimerRef.current);
+      }
+    };
+  }, [startProblem]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24">
