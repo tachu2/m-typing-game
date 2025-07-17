@@ -10,15 +10,17 @@ export default function TypingGame() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const startProblem = useCallback(() => {
+    console.log("start problem");
     setInput("");
     const randomIndex = Math.floor(Math.random() * problemList.length);
     setProblem(problemList[randomIndex]);
     if (problemTimerRef.current) {
       clearInterval(problemTimerRef.current);
     }
+    setProblemTimer(timeoutForProblem);
     problemTimerRef.current = setInterval(() => {
-      setProblemTimer((prev) => prev - 1);
-    }, timeoutForProblem);
+      setProblemTimer((prev) => (prev <= 1 ? 0 : prev - 1));
+    }, 1000);
   }, []);
 
   const handleOnChange = useCallback(
@@ -39,6 +41,7 @@ export default function TypingGame() {
       startProblem();
     }
     inputRef.current?.focus();
+    console.log("use effect");
 
     return () => {
       if (problemTimerRef.current) {
@@ -50,6 +53,7 @@ export default function TypingGame() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24">
       <div className="w-full max-w-2xl bg-white rounded-lg shadow-md p-8 flex flex-col items-center">
+        <h1>{problemTimer}</h1>
         <h1 className="text-3xl font-bold text-gray-800 mb-6">{problem}</h1>
         <input
           ref={inputRef}
