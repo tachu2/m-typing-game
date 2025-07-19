@@ -6,16 +6,12 @@ export default function TypingGame() {
   const [input, setInput] = useState("");
   const [problem, setProblem] = useState("");
   const [problemTimer, setProblemTimer] = useState(timeoutForProblem);
-  const problemTimerRef = useRef<NodeJS.Timeout | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const startProblem = useCallback(() => {
     setInput("");
     const randomIndex = Math.floor(Math.random() * problemList.length);
     setProblem(problemList[randomIndex]);
-    if (problemTimerRef.current) {
-      clearInterval(problemTimerRef.current);
-    }
     setProblemTimer(timeoutForProblem);
   }, []);
 
@@ -33,7 +29,7 @@ export default function TypingGame() {
   );
 
   useEffect(() => {
-    if (problemTimer <= 0 || problem === "") {
+    if (problemTimer < 0 || problem === "") {
       startProblem();
     }
     inputRef.current?.focus();
@@ -41,7 +37,7 @@ export default function TypingGame() {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setProblemTimer((prev) => (prev <= 1 ? 0 : prev - 1));
+      setProblemTimer((prev) => prev - 1);
     }, 1000);
 
     return () => {
@@ -52,7 +48,15 @@ export default function TypingGame() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-24">
       <div className="w-full max-w-2xl bg-white rounded-lg shadow-md p-8 flex flex-col items-center">
-        <h1>{problemTimer}</h1>
+        <div className="w-full bg-gray-200 h-3 rounded-full overflow-hidden mb-4">
+          <div
+            className="h-full bg-blue-500 transition-all duration-1000"
+            style={{
+              width: `${(problemTimer / timeoutForProblem) * 100}%`,
+            }}
+          />
+        </div>
+        <h1 className="text-4xl font-bold text-blue-700">{problemTimer}</h1>
         <h1 className="text-3xl font-bold text-gray-800 mb-6">{problem}</h1>
         <input
           ref={inputRef}

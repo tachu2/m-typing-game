@@ -101,4 +101,4 @@ export const problemList = [
   "yield",
 ];
 
-export const timeoutForProblem = 5;
+export const timeoutForProblem = 4;
